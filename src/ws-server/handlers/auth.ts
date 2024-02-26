@@ -1,6 +1,6 @@
 import { addNewPlayer, checkConnection, generateNewId, selectPlayer, setConnection } from '../../store'
 import { Player, wsClient } from '../types'
-import { refreshRoom } from './room'
+import { refreshRoom } from './rooms'
 
 const sendMessage = (ws: wsClient, name: string, id: number, error: boolean, errorText: string) => {
 	const message = {

@@ -1,5 +1,6 @@
-import { Connections, Player, RequestMessage, Room, wsClient } from '../ws-server/types'
+import { Connections, Game, Player, RequestMessage, Room, wsClient } from '../ws-server/types'
 
+const games: Game[] = []
 const players: Player[] = []
 const connections: Connections = {}
 const rooms: Room[] = []
@@ -39,11 +40,18 @@ const selectRoomByIndex = (indexRoom: number) => {
 const arePlayerInRoom = (name: string, roomId: number) => {
 	return rooms.some(room => room.roomId === roomId && room.roomUsers.some(user => user.name === name))
 }
-
+const addNewGame = (game: Game) => {
+	games.push(game)
+}
 const sendToAll = (message: RequestMessage) => {
 	Object.values(connections).forEach(ws => ws.send(JSON.stringify(message)))
 }
+const sendToPlayer = (id: number, message: RequestMessage) => {
+	connections[id].send(JSON.stringify(message))
+}
 export {
+	addNewGame,
+	sendToPlayer,
 	selectPlayer,
 	addNewPlayer,
 	setConnection,

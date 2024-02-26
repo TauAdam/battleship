@@ -1,7 +1,7 @@
 import { WebSocketServer } from 'ws'
 import { RequestMessage, wsClient } from './types'
 import { loginPlayer } from './handlers/auth'
-import { handleAddUserToRoom, handleCreateRoom, refreshRoom } from './handlers/room'
+import { handleAddUserToRoom, handleCreateRoom, refreshRoom } from './handlers/rooms'
 import { removeConnection } from '../store'
 
 export const BattleshipServer = () => {

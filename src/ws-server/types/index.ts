@@ -38,7 +38,7 @@ type Room = {
 	roomUsers: { name: string; index: number }[]
 }
 type Game = {
-	id: number
+	idGame: number
 	playersIds: number[]
 	playersNames: string[]
 }

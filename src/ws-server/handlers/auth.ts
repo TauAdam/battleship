@@ -1,24 +1,22 @@
-import { addNewPlayer, checkConnection, generateNewId, selectPlayer, setConnection } from '../../store'
-import { Player, wsClient } from '../types'
+import { addNewPlayer, checkConnection, generateNewId, selectPlayerByName, setConnection } from '../../store'
+import { MessageType, Player, wsClient } from '../types'
+import { generateMessage } from '../utils'
 import { refreshRoom } from './rooms'
+import { refreshWinnersTable } from './ships'
 
 const sendMessage = (ws: wsClient, name: string, id: number, error: boolean, errorText: string) => {
-	const message = {
-		id: 0,
-		type: 'reg',
-		data: JSON.stringify({
-			name,
-			id,
-			error,
-			errorText,
-		}),
-	}
+	const message = generateMessage(MessageType.Reg, {
+		name,
+		id,
+		error,
+		errorText,
+	})
 	ws.send(JSON.stringify(message))
 }
 
 const loginPlayer = (ws: wsClient, data: string) => {
 	const { name, password } = JSON.parse(data)
-	const oldPlayer = selectPlayer(name)
+	const oldPlayer = selectPlayerByName(name)
 	if (!oldPlayer) {
 		const newPlayer = new ActivePlayer(name, password)
 		addNewPlayer(newPlayer)
@@ -27,6 +25,7 @@ const loginPlayer = (ws: wsClient, data: string) => {
 		setConnection(newPlayer.id, ws)
 		sendMessage(ws, name, newPlayer.id, false, '')
 		refreshRoom()
+		refreshWinnersTable()
 		return
 	}
 	if (oldPlayer.password !== password) {
@@ -42,6 +41,7 @@ const loginPlayer = (ws: wsClient, data: string) => {
 		setConnection(id, ws)
 		sendMessage(ws, name, id, false, '')
 		refreshRoom()
+		refreshWinnersTable()
 		return
 	}
 	sendMessage(ws, name, oldPlayer.id, true, 'User is already connected')

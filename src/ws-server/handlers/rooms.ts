@@ -1,12 +1,9 @@
 import { addNewGame, addNewRoom, arePlayerInRoom, getRooms, selectPlayerById, selectRoomByIndex, sendToAll, sendToPlayer } from '../../store'
-import { Command, Game } from '../types'
+import { MessageType, Game } from '../types'
+import { generateMessage } from '../utils'
 
 const refreshRoom = () => {
-	const message = {
-		id: 0,
-		type: Command.UpdateRoom,
-		data: JSON.stringify(getRooms()),
-	}
+	const message = generateMessage(MessageType.UpdateRoom, getRooms())
 	sendToAll(message)
 }
 
@@ -25,14 +22,12 @@ const createGameInRoom = (index: number) => {
 		idGame,
 		playersIds: room.roomUsers.map(user => user.index),
 		playersNames: room.roomUsers.map(user => user.name),
+		ships: {},
+		active: 0,
 	}
 	addNewGame(game)
 	room.roomUsers.forEach(user => {
-		const message = {
-			data: JSON.stringify({ idGame, idPlayer: user.index }),
-			id: 0,
-			type: Command.CreateGame,
-		}
+		const message = generateMessage(MessageType.CreateGame, { idGame, idPlayer: user.index })
 		sendToPlayer(user.index, message)
 	})
 }

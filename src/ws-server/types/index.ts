@@ -1,4 +1,5 @@
 import { WebSocket } from 'ws'
+import { ShipEntry } from '../model/ship'
 
 type RequestHandler = (client: wsClient, data: string) => void
 type wsClient = WebSocket & {
@@ -13,7 +14,7 @@ type Player = {
 	name: string
 	password: string
 }
-const enum Command {
+const enum MessageType {
 	Reg = 'reg',
 	UpdateWinners = 'update_winners',
 	CreateRoom = 'create_room',
@@ -29,7 +30,7 @@ const enum Command {
 }
 
 type RequestMessage = {
-	type: Command
+	type: MessageType
 	data: string
 	id: number
 }
@@ -38,9 +39,24 @@ type Room = {
 	roomUsers: { name: string; index: number }[]
 }
 type Game = {
+	active: 1 | 0
 	idGame: number
 	playersIds: number[]
 	playersNames: string[]
+	ships: { [key: string]: ShipEntry }
 }
-export { Command }
-export type { RequestMessage, Player, Connections, wsClient, RequestHandler, Room, Game }
+type WinnerEntry = {
+	name: string
+	wins: number
+}
+type Ship = {
+	direction: boolean
+	type: 'small' | 'medium' | 'large' | 'huge'
+	position: {
+		x: number
+		y: number
+	}
+	length: number
+}
+export { MessageType }
+export type { WinnerEntry, Ship, RequestMessage, Player, Connections, wsClient, RequestHandler, Room, Game }
